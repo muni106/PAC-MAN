@@ -1,0 +1,29 @@
+xxxxxx xxx xxx xxx xxxxxx
+xxxxxx xxx xxx xxx xxxxxx
+xx                     xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+                         
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+        G       G        
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+           XXX           
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+        G       G        
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+            <            
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx xxx xxx xxx xxx xxx xx
+xx                     xx
+xxxxxx xxx xxx xxx xxxxxx
+xxxxxx xxx xxx xxx xxxxxx

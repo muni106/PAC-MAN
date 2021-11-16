@@ -8,7 +8,8 @@
 #ifdef WIN
 #include <time.h>
 #else
-#include <sys/time.h>
+
+#include "sys/time.h"
 #endif
 
 unsigned int START_ROW, START_COL;

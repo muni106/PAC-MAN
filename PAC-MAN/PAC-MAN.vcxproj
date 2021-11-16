@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="arena.c" />
     <ClCompile Include="display.c" />
+    <ClCompile Include="ghosts.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />
     <ClCompile Include="pacman.c" />
@@ -28,11 +29,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arena.h" />
+    <ClInclude Include="curses.h" />
     <ClInclude Include="display.h" />
     <ClInclude Include="ghosts.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="pacman.h" />
+    <ClInclude Include="panel.h" />
     <ClInclude Include="queue.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -107,10 +110,12 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$ProjectDir)/pdcurses.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,10 +140,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(ProjectDir)/pdcurses.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

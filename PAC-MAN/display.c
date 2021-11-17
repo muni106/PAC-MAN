@@ -1,15 +1,15 @@
 #include <stdlib.h>
 #include "display.h"
 
+
 #define SLEEP_TIME 0.5
 #define BLINK
-//#define WIN
+#define WIN
 
 #ifdef WIN
 #include <time.h>
 #else
-
-#include "sys/time.h"
+#include "sys/timeb.h"
 #endif
 
 unsigned int START_ROW, START_COL;

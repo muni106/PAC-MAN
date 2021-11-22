@@ -64,7 +64,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\..\..\..\..\..\Downloads\ghosts_obj\ghosts.obj">
+    <Object Include="ghosts.obj">
       <Filter>File di origine</Filter>
     </Object>
   </ItemGroup>

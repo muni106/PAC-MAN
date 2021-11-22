@@ -38,7 +38,7 @@
     <ClInclude Include="queue.h" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\..\..\..\..\..\Downloads\ghosts_obj\ghosts.obj" />
+    <Object Include="ghosts.obj" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

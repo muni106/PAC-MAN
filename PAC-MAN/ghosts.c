@@ -125,7 +125,14 @@ enum ghost_status ghosts_get_status(struct ghosts* G, unsigned int id) {
 
 
 struct position ghosts_move(struct ghosts* G, struct pacman* P, unsigned int id) {
-    return { 0,0 };
+    //return { 0,0 };
+    struct MyStruct
+    {
+        int i = 0,
+        int j = 0,
+    }
+    return MyStruct;
+    
 }
 
 #endif

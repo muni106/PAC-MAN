@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="arena.c" />
     <ClCompile Include="display.c" />
+    <ClCompile Include="ghosts.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />
     <ClCompile Include="pacman.c" />
@@ -36,9 +37,6 @@
     <ClInclude Include="pacman.h" />
     <ClInclude Include="panel.h" />
     <ClInclude Include="queue.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="ghosts.obj" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -71,7 +71,76 @@ int main(int argc, char *argv[]) {
 					case QUIT_KEY    : stat = QUIT;    break;
 					default:           stat = UNK_GAME_STATUS;
 				}
-			} while(stat == UNK_GAME_STATUS);
+			} while(stat == UNK_GAME_STATUS
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				);
 		}
 
 		display_close();

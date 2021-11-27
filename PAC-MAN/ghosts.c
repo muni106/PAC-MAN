@@ -1,6 +1,4 @@
-
 #define GHOSTS_STUD
-
 #ifdef GHOSTS_STUD
 
 
@@ -11,94 +9,75 @@
 #include "pacman.h"
 #include "matrix.h"
 
-#include "global.h"
+static const struct position UNK_POSITION = { -1,-1 };
 
-
-static const struct position UNK_POSITION = { -1,-1 }; // Set unknown position to (UINT_MAX,UINT_MAX)
-
-static struct ghost
-{
-    unsigned int id;
-    enum ghost_status status;
-    enum direction direction;
-    struct position ghost_position;
-
+//Struttura fantasma singolo
+struct ghost {
+    unsigned int ID;
+    int status;
+    int direction;
+    struct position pos;
+    
 };
-
-static struct ghosts {
+//Struttura per tutti i fantasmi
+struct ghosts {
     unsigned int amount;
-    struct ghost* ghost_arr;
-    unsigned int arena_rowS, arena_colS;
-    char** arena_definE;
+    struct ghost* ghost_array;
+    char** ARENA;
+    unsigned int nrows;
+    unsigned int ncols;
+    
 };
-/*
-static unsigned int arena_rows, arena_cols;
-static char** arena_define;
-*/
+
+
 
 /* Create the ghosts data structure */
 struct ghosts* ghosts_setup(unsigned int num_ghosts) {
-    struct ghosts* ghosts_punt;
-    ghosts_punt = (struct ghosts*)malloc(sizeof(struct ghosts));
-    if (ghosts_punt != NULL) {
-        ghosts_punt->amount = num_ghosts;
-        ghosts_punt->ghost_arr = (struct ghost*)calloc(num_ghosts, sizeof(struct ghost));
-
-        int i;
-
-        if (ghosts_punt->ghost_arr != NULL) {
-            for (i = 0; i < ghosts_punt->amount; i++) {
-                ghosts_punt->ghost_arr[i].id = i;
-                ghosts_punt->ghost_arr[i].ghost_position = UNK_POSITION;
-                ghosts_punt->ghost_arr[i].direction = UP;
+    struct ghosts* g = (struct ghosts *)calloc(1,sizeof(struct ghosts));
+    if (g != NULL) {
+        g->amount = num_ghosts;
+        g->ghost_array = (struct ghost*)calloc(num_ghosts, sizeof(struct ghost));
+        unsigned int i = 0;
+        if (g->ghost_array != NULL) {
+            while (i < (g->amount)) {
+                g->ghost_array[i].ID = i;
+                g->ghost_array[i].pos = UNK_POSITION;
+                g->ghost_array[i].direction = UP;
+                i++;
             }
         }
-    }
-    return ghosts_punt;
+    }    
+    return g;
 }
 
 /* Destroy the ghost data structure */
 void ghosts_destroy(struct ghosts* G) {
     if (G != NULL) {
-        free(G->ghost_arr);
-        free(G);
+    free(G->ghost_array);
+    free(G);
+    
     }
-    return;
+
 }
 
 /* Set the arena (A) matrix */
-void ghosts_set_arena(struct ghosts* G, char** A, unsigned int nrow, unsigned int ncol) {
+void ghosts_set_arena(struct ghosts* G, char** A, unsigned int nrow,
+    unsigned int ncol) {
     if (G != NULL) {
-        G->arena_definE = A;
-        G->arena_colS = ncol;
-        G->arena_rowS = nrow;
+        G->ARENA = A;
+        G->nrows = nrow;
+        G->ncols = ncol;
     }
-    return;
 }
 
 /* Set the position of the ghost id. */
 void ghosts_set_position(struct ghosts* G, unsigned int id, struct position pos) {
-    if ((G != NULL) && (id < G->amount)) {
-        int i;
-        for (i = 0; i < G->amount; i++) {
-            if (G->ghost_arr[i].id == id) {
-                G->ghost_arr[i].ghost_position = pos;
-            }
-        }
-    }
-    return;
+    if (G != NULL) G->ghost_array[id].pos = pos;
 }
 
 /* Set the status of the ghost id. */
 void ghosts_set_status(struct ghosts* G, unsigned int id, enum ghost_status status) {
-    if ((G != NULL) && (id < G->amount)) {
-        int i;
-        for (i = 0; i < G->amount; i++) {
-            if (G->ghost_arr[id].id == id)
-                G->ghost_arr[id].status = status;
-        }
-    }
-    return;
+    if (G != NULL) G->ghost_array[id].status = status;
 }
 
 /* Return the number of ghosts */
@@ -108,31 +87,59 @@ unsigned int ghosts_get_number(struct ghosts* G) {
 
 /* Return the position of the ghost id. */
 struct position ghosts_get_position(struct ghosts* G, unsigned int id) {
-    int i;
-    for (i = 0; i < G->amount; i++) {
-        if (G->ghost_arr[i].id == id) return G->ghost_arr[i].ghost_position;
-    }
+    return G !=NULL ? G->ghost_array[id].pos : UNK_POSITION;
+
 }
 
 /* Return the status of the ghost id. */
 enum ghost_status ghosts_get_status(struct ghosts* G, unsigned int id) {
-    int i;
-    for (i = 0; i < G->amount; i++) {
-        if (G->ghost_arr[i].id == id) return G->ghost_arr[id].status;
-    }
+    return G!= NULL ? G->ghost_array[id].status : UNK_GHOST_STATUS;
 }
 
 
 
+/* Move the ghost id (according to its status). Returns the new position */
+//DA MODIFICARE
 struct position ghosts_move(struct ghosts* G, struct pacman* P, unsigned int id) {
-    //return { 0,0 };
-    struct MyStruct
-    {
-        int i = 0,
-        int j = 0,
+    if (update_ghost_posiotion(G, G->ghost_array->direction) != 0) {
+        if (G->ghost_array->direction != /*something*/)
+            update_ghost_posiotion(G->ghost_array, G->ghost_array->direction);
     }
-    return MyStruct;
-    
+    return G->ghost_array->pos;
+}
+
+
+//dovrebbe essere buono
+static struct position new_pos(struct position pos, enum direction dir, unsigned int nrow, unsigned int ncol) {
+        struct position nuova_pos = pos;
+        switch (dir) {
+        case LEFT: nuova_pos.j = (pos.j + (ncol - 1)) % ncol; 
+            break;
+        case RIGHT: nuova_pos.j = (pos.j + 1) % ncol; 
+            break;
+        case UP:    nuova_pos.i = (pos.i + (nrow - 1)) % nrow;
+            break;
+        case DOWN:  nuova_pos.i = (pos.i + 1) % nrow; 
+            break;
+        case UNK_DIRECTION: break;
+        }
+        return nuova_pos;
+
+}
+
+//DA MODIFICARE MOLTO 
+static int update_ghost_posiotion(struct ghosts *G, enum direction dir) {
+    struct position nuova_pos = new_pos(G->ghost_array[0].pos, dir, G->nrows, G->ncols);
+    if (!IS_WALL(G->ARENA, nuova_pos) && ) {
+        G->ghost_array[0].pos = nuova_pos;
+        G->ghost_array->direction = dir;
+        return 0;
+    }
+    else {
+        return 1;
+    }
 }
 
 #endif
+
+

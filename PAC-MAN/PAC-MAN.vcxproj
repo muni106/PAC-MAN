@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="arena.c" />
     <ClCompile Include="display.c" />
+    <ClCompile Include="Fantasmoni.c" />
+    <ClCompile Include="Fantasmoni_mic.c" />
     <ClCompile Include="ghosts.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />

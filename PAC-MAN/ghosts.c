@@ -8,29 +8,40 @@
 #include "ghosts.h"
 #include "pacman.h"
 #include "matrix.h"
+#include <stdlib.h>
 
 /* VARIABILI GLOBALI */
 
-static const struct position UNK_POSITION = {0,0};
+static const struct position UNK_POSITION = { 0,0 };
 
-    //Struttura fantasma singolo
-    struct ghost {
-        unsigned int ID;
-        int status;
-        int direction;
-        struct position pos;
+//Struttura fantasma singolo
+struct ghost {
+    unsigned int ID;
+    int status;
+    int direction;
+    struct position pos;
 
-    };
+};
 
-    //Struttura per tutti i fantasmi
-    struct ghosts {
-        unsigned int amount;
-        struct ghost* ghost_array;
-        char** ARENA;
-        unsigned int nrows;
-        unsigned int ncols;
+//Struttura per tutti i fantasmi
+struct ghosts {
+    unsigned int amount;
+    struct ghost* ghost_array;
+    char** ARENA;
+    unsigned int nrows;
+    unsigned int ncols;
 
-    };
+};
+
+
+
+/* PROTOTIPI DELLE FUNZIONI */
+int ritornoFantasma(struct position ghost_pos, struct ghosts* G);
+int stessa_posizione(struct position pos_1, struct position pos_2);
+struct position new_pos(struct position pos, enum direction dir, unsigned int nrow, unsigned int ncol);
+int scared_ghost(struct position pos, struct ghosts* G, struct position pacman_pos);
+int normal_ghost(struct position pos, struct ghosts* G);
+int inversione(int dir);
 
 
 
@@ -104,23 +115,6 @@ enum ghost_status ghosts_get_status(struct ghosts* G, unsigned int id) {
 
 
 
-
-
-
-
-#define PPOS P->pos
-
-
-
-//cambia direzione in modo casualeù
-int new_direction(int dir) {
-    while (dir < 4) {
-        dir++;
-        return dir;
-    }
-    return 0;
-}
-
 ////DA MODIFICARE MOLTO 
 //static int update_ghost_position(struct ghosts* G, struct pacman* P, unsigned int id) {
 //    struct position nuova_pos = new_pos(G->ghost_array[id].pos, G->ghost_array->direction, G->nrows, G->ncols);
@@ -159,8 +153,6 @@ int new_direction(int dir) {
 //}
 
 
-
-
 /* Move the ghost id (according to its status). Returns the new position */
 //DA MODIFICARE
 struct position ghosts_move(struct ghosts* G, struct pacman* P, unsigned int id) {
@@ -172,22 +164,60 @@ struct position ghosts_move(struct ghosts* G, struct pacman* P, unsigned int id)
 
     switch (G->ghost_array[id].status) {
     case NORMAL:
-        new_direction = 
+        new_direction = rand() % 4;
+        if (!normal_ghost(new_pos(ghost_pos, new_direction, G->nrows, G->ncols), G))
+            ghost_pos = new_pos(ghost_pos, new_direction, G->nrows, G->ncols);
+    case SCARED_NORMAL: case SCARED_BLINKING:
+        new_direction = rand() % 4;
+        if (!scared_ghost(new_pos(ghost_pos, new_direction, G->nrows, G->ncols), G, pacman_pos))
+            ghost_pos = new_pos(ghost_pos, new_direction, G->nrows, G->ncols);
+        break;
+    case EYES:
+        new_direction = ritornoFantasma(ghost_pos, G);
+        int dir_compl[2];
+        dir_complementari(new_direction, dir_compl);
+        //possible directions
+        if (!scared_ghost(new_pos(ghost_pos, new_direction, G->nrows, G->ncols), G, pacman_pos))
+            ghost_pos = new_pos(ghost_pos, new_direction, G->nrows, G->ncols);
+        else if (!scared_ghost(new_pos(ghost_pos, dir_opposta(new_direction), G->nrows, G->ncols), G, pacman_pos))
+            ghost_pos = new_pos(ghost_pos, new_direction, G->nrows, G->ncols);
+        else if (!scared_ghost(new_pos(ghost_pos, dir_compl[0], G->nrows, G->ncols), G, pacman_pos))
+            ghost_pos = new_pos(ghost_pos, dir_compl[0], G->nrows, G->ncols);
+        else if (!scared_ghost(new_pos(ghost_pos, dir_compl[1], G->nrows, G->ncols), G, pacman_pos))
+            ghost_pos = new_pos(ghost_pos, dir_compl[1], G->nrows, G->ncols);
+        break;
+    default:
+        new_direction = UNK_DIRECTION;
+        break;
     }
+    G->ghost_array[id].direction = new_direction;
+    G->ghost_array[id].pos = ghost_pos;
 }
 
 
 
 
-//inverti direzione 
-int inversione(int dir) {
+//direzione opposta
+int dir_opposta(int dir) {
     switch (dir) {
-        case UP: return DOWN;
-        case DOWN: return UP;
-        case LEFT: return RIGHT;
-        case RIGHT: return LEFT;
-        default: return -1; 
+    case UP: return DOWN;
+    case DOWN: return UP;
+    case LEFT: return RIGHT;
+    case RIGHT: return LEFT;
+    default: return -1;
         break;
+    }
+}
+//direzioni complementari
+void dir_complementari(int dir, int* compl) {
+    switch (dir) {
+    case UP: case DOWN:
+        compl[0] = LEFT;
+        compl[1] = RIGHT;
+        break;
+    case LEFT: case RIGHT:
+        compl[0] = UP;
+        compl[1] = DOWN;
     }
 }
 
@@ -196,8 +226,8 @@ int normal_ghost(struct position pos, struct ghosts* G) {
     int i;
     //vede se è un fantasma
     for (i = 0; i < G->amount; i++) {
-        if(G->ghost_array[i].pos.i == pos.i && G->ghost_array[i].pos.j == pos.j)
-        return 1;
+        if (G->ghost_array[i].pos.i == pos.i && G->ghost_array[i].pos.j == pos.j)
+            return 1;
     }
     return (IS_WALL(G->ARENA, pos));
 }
@@ -206,12 +236,12 @@ int normal_ghost(struct position pos, struct ghosts* G) {
 int scared_ghost(struct position pos, struct ghosts* G, struct position pacman_pos) {
     if ((pacman_pos.i == pos.i && pacman_pos.j == pos.j) || normal_ghost(pos, G)) return 1;
     else return 0;
-    
+
 }
 
 
 //Nuova posizione del fantasma
-static struct position new_pos(struct position pos, enum direction dir, unsigned int nrow, unsigned int ncol) {
+struct position new_pos(struct position pos, enum direction dir, unsigned int nrow, unsigned int ncol) {
     struct position nuova_pos = pos;
     switch (dir) {
     case LEFT: nuova_pos.j = (pos.j + (ncol - 1)) % ncol;
@@ -234,15 +264,18 @@ int stessa_posizione(struct position pos_1, struct position pos_2) {
 }
 
 //Fa tornare il fantasmino mangiato a casa
-int ritornoFantasma(struct position ghost_pos,struct ghosts* G) {
+int ritornoFantasma(struct position ghost_pos, struct ghosts* G) {
     char casella = G->ARENA[ghost_pos.i][ghost_pos.j];
     switch (casella) {
-        case LEFT_SYM: return LEFT;
-        case UP_SYM: return UP;
-        case RIGHT_SYM: return RIGHT;
-        case DOWN_SYM: return DOWN;
-        default: return UNK_DIRECTION;
+    case LEFT_SYM: return LEFT;
+    case UP_SYM: return UP;
+    case RIGHT_SYM: return RIGHT;
+    case DOWN_SYM: return DOWN;
+    default: return UNK_DIRECTION;
     }
 }
 
 #endif
+
+
+
